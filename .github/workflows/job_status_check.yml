@@ -1,0 +1,17 @@
+name: Job Status Check
+
+on:
+  workflow_call:
+    inputs:
+      job_result:
+        description: 'The result of the job'
+        required: true
+        type: string
+
+jobs:
+  job_status_check:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check job status
+        run: |
+          [[ ${{ inputs.job_result }} == 'failure' || ${{ inputs.job_result }} == 'cancelled' ]] && exit 1 || exit 0

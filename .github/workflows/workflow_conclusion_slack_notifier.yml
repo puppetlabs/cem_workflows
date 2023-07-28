@@ -1,0 +1,60 @@
+name: Workflow Conclusion Slack Notifier
+
+on:
+  workflow_call:
+    inputs:
+      workflow_name:
+        description: 'The name of the workflow'
+        required: true
+        type: string
+      display_title:
+        description: 'The display title of the workflow run'
+        required: true
+        type: string
+      conclusion:
+        description: 'The result of the workflow run'
+        required: true
+        type: string
+      html_url:
+        description: 'The HTML URL of the workflow run'
+        required: true
+        type: string
+      repo_full_name:
+        description: 'The full name of the repository'
+        required: true
+        type: string
+    secrets:
+      slack_webhook_url:
+        description: 'The Slack webhook URL'
+        required: true
+
+jobs:
+  notify-slack:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check for draft PR
+        id: check_draft_pr
+        uses: actions/github-script@v3
+        with:
+          script: |
+            const { data: pullRequest } = await github.pulls.get({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              pull_number: context.payload.pull_request.number
+            });
+            return pullRequest.draft;
+
+      - name: Send workflow conclusion payload to Slack
+        uses: slackapi/slack-github-action@v1.23.0
+        if: ${{ !steps.check_draft_pr.outputs.result }}
+        env:
+          SLACK_WEBHOOK_URL: ${{ secrets.slack_webhook_url }}
+        with:
+          payload: |
+            {
+              "workflow": "${{ inputs.workflow_name }}",
+              "title": "${{ inputs.display_title }}",
+              "result": "${{ inputs.conclusion == 'success' && '🟢' || '🔴' }} ${{ inputs.conclusion }}",
+              "url": "${{ inputs.html_url }}",
+              "repo": "${{ inputs.repo_full_name }}"
+            }

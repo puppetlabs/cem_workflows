@@ -1,0 +1,55 @@
+# This file is used by .github/workflows/ci.yml to catagorize changed files
+# for conditional jobs. The patterns are used by the changed-files action
+# which is found here: https://github.com/tj-actions/changed-files
+all:
+  - '**/*'
+puppet:
+  - '**/*.pp'
+ruby:
+  - '**/*.rb'
+other:
+  - '**/*'
+  - '!**/*.pp'
+  - '!**/*.rb'
+benchmarks:
+  - manifests/benchmarks/**/*.pp
+facts:
+  - lib/facter/**/*.rb
+features:
+  - lib/puppet/feature/**/*.rb
+functions:
+  - lib/puppet/functions/*.rb
+  - lib/puppet/functions/**/*.rb
+  - lib/puppet/parser/functions/**/*.rb
+hiera:
+  - data/**/*.yaml
+plans:
+  - plans/**/*
+providers:
+  - lib/puppet/provider/**/*.rb
+puppet_x:
+  - lib/puppet_x/**/*.rb
+tasks:
+  - tasks/**/*
+tests_acceptance:
+  - spec/acceptance/**/*.yaml
+  - spec/acceptance/**/*.pp
+  - cem_acpt_config.yaml
+tests_data:
+  - spec/data_tests/**/*.yaml
+tests_unit:
+  - spec/classes/**/*.rb
+  - spec/defines/**/*.rb
+  - spec/files/**/*
+  - spec/functions/**/*.rb
+  - spec/tasks/**/*.rb
+  - spec/unit/**/*.rb
+  - spec/spec_helper.rb
+  - spec/spec_helper_local.rb
+types:
+  - lib/puppet/type/**/*.rb
+utils:
+  - manifests/utils/**/*.pp
+workflows:
+  - .github/workflows/*.yml
+  - .github/changed_files.yml

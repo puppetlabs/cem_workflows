@@ -1,0 +1,96 @@
+name: Should Run Check
+
+on:
+  workflow_call:
+    outputs:
+      all:
+        description: "Whether or not to run all the tests"
+        value: "${{ jobs.should_run_check.outputs.all }}"
+      spec:
+        description: "Whether or not to run RSpec tests"
+        value: "${{ jobs.should_run_check.outputs.spec }}"
+      acpt:
+        description: "Whether or not to run acceptance tests"
+        value: "${{ jobs.should_run_check.outputs.acpt }}"
+      data:
+        description: "Whether or not to run data tests"
+        value: "${{ jobs.should_run_check.outputs.data }}"
+      reference_gen:
+        description: "Whether or not to run reference generation tests"
+        value: "${{ jobs.should_run_check.outputs.reference_gen }}"
+
+jobs:
+  should_run_check:
+    runs-on: ubuntu-latest
+    outputs:
+      all: "${{ steps.should_run.outputs.all }}"
+      spec: "${{ steps.should_run.outputs.spec }}"
+      acpt: "${{ steps.should_run.outputs.acpt }}"
+      data: "${{ steps.should_run.outputs.data }}"
+      reference_gen: "${{ steps.should_run.outputs.reference_gen }}"
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+  
+      - name: Get all changed files
+        id: changed_files
+        uses: tj-actions/changed-files@v37
+        with:
+          files_yaml_from_source_file: .github/changed_files.yml
+
+      - name: Find out what should run
+        id: should_run
+        shell: python
+        run: |
+          import os
+          workflow_files = '${{ steps.changed_files.outputs.workflows_all_changed_and_modified_files }}'.split(' ')
+          for x in workflow_files:
+              if x == '.github/workflows/ci.yml':
+                  os.system('echo "all=true" >> $GITHUB_OUTPUT')
+                  exit(0)
+          spec_counts = [
+              ${{ steps.changed_files.outputs.puppet_all_changed_and_modified_files_count }},
+              ${{ steps.changed_files.outputs.ruby_all_changed_and_modified_files_count }},
+              ${{ steps.changed_files.outputs.tests_unit_all_changed_and_modified_files_count }}
+          ]
+          acpt_counts = [
+              ${{ steps.changed_files.outputs.puppet_all_changed_and_modified_files_count }},
+              ${{ steps.changed_files.outputs.ruby_all_changed_and_modified_files_count }},
+              ${{ steps.changed_files.outputs.hiera_all_changed_and_modified_files_count }},
+              ${{ steps.changed_files.outputs.tests_acceptance_all_changed_and_modified_files_count }}
+          ]
+          data_counts = [
+              ${{ steps.changed_files.outputs.hiera_all_changed_and_modified_files_count }},
+              ${{ steps.changed_files.outputs.tests_data_all_changed_and_modified_files_count }}
+          ]
+          reference_counts = [
+              ${{ steps.changed_files.outputs.puppet_all_changed_and_modified_files_count }},
+              ${{ steps.changed_files.outputs.ruby_all_changed_and_modified_files_count }},
+              ${{ steps.changed_files.outputs.hiera_all_changed_and_modified_files_count }},
+          ]
+          for x in spec_counts:
+              if x != 0:
+                  os.system('echo "spec=true" >> $GITHUB_OUTPUT')
+                  break
+          for x in acpt_counts:
+              if x != 0:
+                  os.system('echo "acpt=true" >> $GITHUB_OUTPUT')
+                  break
+          for x in data_counts:
+              if x != 0:
+                  os.system('echo "data=true" >> $GITHUB_OUTPUT')
+                  break
+          for x in reference_counts:
+              if x != 0:
+                  os.system('echo "reference_gen=true" >> $GITHUB_OUTPUT')
+                  break
+
+      - name: Print should run checks
+        run: |
+          echo ::group::should run check
+          echo "all: ${{ steps.should_run.outputs.all }}"
+          echo "spec: ${{ steps.should_run.outputs.spec }}"
+          echo "acpt: ${{ steps.should_run.outputs.acpt }}"
+          echo "data: ${{ steps.should_run.outputs.data }}"
+          echo "reference_gen: ${{ steps.should_run.outputs.reference_gen }}"
+          echo ::endgroup::
