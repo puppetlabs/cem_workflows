@@ -1,3 +1,6 @@
+# This workflow is used to determine what tests should run based on the files
+# that have changed in the PR. It is used by the CI workflow to determine what
+# tests to run.
 name: Should Run Check
 
 on:
@@ -7,7 +10,7 @@ on:
         description: "Whether or not to run all the tests"
         value: "${{ jobs.should_run_check.outputs.all }}"
       spec:
-        description: "Whether or not to run RSpec tests"
+        description: "Whether or not to run RSpec unit tests"
         value: "${{ jobs.should_run_check.outputs.spec }}"
       acpt:
         description: "Whether or not to run acceptance tests"

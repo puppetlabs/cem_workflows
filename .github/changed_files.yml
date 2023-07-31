@@ -1,4 +1,5 @@
-# This file is used by .github/workflows/ci.yml to catagorize changed files
+# This file is used by .github/workflows/changed_files.yml and
+# .github/workflows/should_run_check.yml to catagorize changed files
 # for conditional jobs. The patterns are used by the changed-files action
 # which is found here: https://github.com/tj-actions/changed-files
 all:

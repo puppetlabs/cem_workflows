@@ -1,0 +1,43 @@
+name: "REFERENCE.md Generation Test"
+
+on:
+  workflow_call:
+
+jobs:
+  reference_gen_test:
+    runs-on: ubuntu-20.04
+    steps:
+      - name: "Checkout Source"
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+  
+      - name: "Setup Ruby"
+        uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: '3.2'
+  
+      - name: "Install gems"
+        run: |
+          gem install pry abide_dev_utils
+  
+      - name: "Regenerate REFERENCE.md"
+        run: |
+          rm -f REFERENCE.md
+          abide cem generate reference -o REFERENCE.md
+          test -s REFERENCE.md || exit 1
+      
+      - name: "Checkout main/REFERENCE.md"
+        uses: actions/checkout@v3
+        with:
+          repository: puppetlabs/puppetlabs-cem_linux
+          path: main
+          fetch-depth: 0
+          persist-credentials: false
+  
+      - name: "Display diff output"
+        run: |
+          diff REFERENCE.md main/REFERENCE.md || echo $? > diffreturncode.txt
+          test `cat diffreturncode.txt` -le 1 || exit 1
+

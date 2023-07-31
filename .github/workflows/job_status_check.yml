@@ -14,4 +14,4 @@ jobs:
     steps:
       - name: Check job status
         run: |
-          [[ ${{ inputs.job_result }} == 'failure' || ${{ inputs.job_result }} == 'cancelled' ]] && exit 1 || exit 0
+          [[ "${{ inputs.job_result }}" == "failure" || "${{ inputs.job_result }}" == "cancelled" ]] && exit 1 || exit 0
