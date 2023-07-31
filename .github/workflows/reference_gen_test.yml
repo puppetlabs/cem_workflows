@@ -31,7 +31,7 @@ jobs:
       - name: "Checkout main/REFERENCE.md"
         uses: actions/checkout@v3
         with:
-          repository: puppetlabs/puppetlabs-cem_linux
+          repository: ${{ github.repository }}
           path: main
           fetch-depth: 0
           persist-credentials: false
