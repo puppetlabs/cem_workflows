@@ -44,6 +44,10 @@ jobs:
             });
             return pullRequest.draft;
 
+      - name: Print draft PR check results
+        run: |
+          echo "Draft PR check result: ${{ steps.check_draft_pr.outputs.result }}"
+
       - name: Send workflow conclusion payload to Slack
         uses: slackapi/slack-github-action@v1.23.0
         if: ${{ !steps.check_draft_pr.outputs.result }}
