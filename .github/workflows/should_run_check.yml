@@ -32,6 +32,12 @@ jobs:
       data: "${{ steps.should_run.outputs.data }}"
       reference_gen: "${{ steps.should_run.outputs.reference_gen }}"
     steps:
+      - name: Print inherited github context
+        run: |
+          echo ::group::github context
+          echo "${{ toJson(github) }}" | jq .
+          echo ::endgroup::
+
       - name: Checkout
         uses: actions/checkout@v3
   
@@ -48,7 +54,7 @@ jobs:
           import os
           workflow_files = '${{ steps.changed_files.outputs.workflows_all_changed_and_modified_files }}'.split(' ')
           # Always run all tests for workflow_dispatch and nightlies
-          if '${{ github.event.event_name }}' != 'pull_request':
+          if '${{ github.event_name }}' != 'pull_request':
               os.system('echo "all=true" >> $GITHUB_OUTPUT')
               exit(0)
           for x in workflow_files:
