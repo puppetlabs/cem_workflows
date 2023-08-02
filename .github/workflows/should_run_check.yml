@@ -35,7 +35,9 @@ jobs:
       - name: Print inherited github context
         run: |
           echo ::group::github context
-          echo "${{ toJson(github) }}" | jq .
+          echo "event: ${{ github.event }}"
+          echo "event_name: ${{ github.event_name }}"
+          echo "event_path: ${{ github.event_path }}"
           echo ::endgroup::
 
       - name: Checkout
