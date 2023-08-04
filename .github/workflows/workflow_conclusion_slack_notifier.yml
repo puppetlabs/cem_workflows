@@ -32,6 +32,15 @@ jobs:
   notify-slack:
     runs-on: ubuntu-latest
     steps:
+      - name: Set Payload Parameters
+        id: payload-params
+        run: |
+          echo "workflow=${{ github.event.workflow_run.name }}" >> $GITHUB_OUTPUT
+          echo "title=${{ format('{0}: {1}', github.event.workflow_run.event, github.event.workflow_run.display_title) }}" >> $GITHUB_OUTPUT
+          echo "result=${{ github.event.workflow_run.conclusion }}" >> $GITHUB_OUTPUT
+          echo "url=${{ github.event.workflow_run.html_url }}" >> $GITHUB_OUTPUT
+          echo "repo=${{ github.event.repository.full_name }}" >> $GITHUB_OUTPUT
+
       - name: Send workflow conclusion payload to Slack
         uses: slackapi/slack-github-action@v1.23.0
         env:
@@ -39,9 +48,9 @@ jobs:
         with:
           payload: |
             {
-              "workflow": "${{ inputs.workflow_name }}",
-              "title": "${{ inputs.display_title }}",
-              "result": "${{ inputs.conclusion == 'success' && '🟢' || '🔴' }} ${{ inputs.conclusion }}",
-              "url": "${{ inputs.html_url }}",
-              "repo": "${{ inputs.repo_full_name }}"
+              "workflow": "${{ steps.payload-params.outputs.workflow }}",
+              "title": "${{ steps.payload-params.outputs.display_title }}",
+              "result": "${{ steps.payload-params.outputs.result == 'success' && '🟢' || '🔴' }} ${{ steps.payload-params.outputs.result }}",
+              "url": "${{ steps.payload-params.outputs.url }}",
+              "repo": "${{ steps.payload-params.outputs.repo }}"
             }
