@@ -5,27 +5,27 @@ on:
     inputs:
       workflow_name:
         description: 'The name of the workflow'
-        required: true
+        required: false
         type: string
         default: ''
       display_title:
         description: 'The display title of the workflow run'
-        required: true
+        required: false
         type: string
         default: ''
       conclusion:
         description: 'The result of the workflow run'
-        required: true
+        required: false
         type: string
         default: ''
       html_url:
         description: 'The HTML URL of the workflow run'
-        required: true
+        required: false
         type: string
         default: ''
       repo_full_name:
         description: 'The full name of the repository'
-        required: true
+        required: false
         type: string
         default: ''
     secrets:
