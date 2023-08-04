@@ -54,7 +54,7 @@ jobs:
           payload: |
             {
               "workflow": "${{ steps.payload-params.outputs.workflow }}",
-              "title": "${{ steps.payload-params.outputs.display_title }}",
+              "title": "${{ steps.payload-params.outputs.title }}",
               "result": "${{ steps.payload-params.outputs.result == 'success' && '🟢' || '🔴' }} ${{ steps.payload-params.outputs.result }}",
               "url": "${{ steps.payload-params.outputs.url }}",
               "repo": "${{ steps.payload-params.outputs.repo }}"
