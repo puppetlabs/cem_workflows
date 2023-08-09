@@ -38,6 +38,6 @@ jobs:
   
       - name: "Display diff output"
         run: |
-          diff REFERENCE.md main/REFERENCE.md || echo $? > diffreturncode.txt
+          diff REFERENCE.md main/REFERENCE.md && echo $? > diffreturncode.txt || echo $? > diffreturncode.txt
           test `cat diffreturncode.txt` -le 1 || exit 1
 
