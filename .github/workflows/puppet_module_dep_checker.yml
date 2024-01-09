@@ -16,7 +16,7 @@ jobs:
   puppet_module_dep_checker:
     runs-on: ubuntu-20.04
     env:
-      PUPPET_GEM_VERSION: "~> #{{ github.event.inputs.puppet_major_version }}"
+      PUPPET_GEM_VERSION: "~> ${{ inputs.puppet_major_version }}"
       FACTER_GEM_VERSION: 'https://github.com/puppetlabs/facter#main'
       CEM_LINUX_NO_AUGEAS: 'true'
     steps:
@@ -26,10 +26,10 @@ jobs:
           fetch-depth: 0
           persist-credentials: false
   
-      - name: "Activate Ruby ${{ github.event.inputs.puppet_ruby_version }}"
+      - name: "Activate Ruby ${{ inputs.puppet_ruby_version }}"
         uses: ruby/setup-ruby@v1
         with:
-          ruby-version: ${{ github.event.inputs.puppet_ruby_version }}
+          ruby-version: ${{ inputs.puppet_ruby_version }}
           bundler-cache: true
   
       - name: Print bundle environment
@@ -38,6 +38,6 @@ jobs:
           bundle env
           echo ::endgroup::
   
-      - name: "Check dependencies for Puppet v${{ github.event.inputs.puppet_major_version }}"
+      - name: "Check dependencies for Puppet v${{ inputs.puppet_major_version }}"
         run: |
           bundle exec dependency-checker metadata.json
