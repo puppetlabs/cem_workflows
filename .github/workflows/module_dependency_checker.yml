@@ -1,0 +1,43 @@
+name: "Puppet Module Dependency Checker"
+
+on:
+  workflow_call:
+    inputs:
+      puppet_major_version:
+        description: 'Puppet version (7.0, 8.0, etc.)'
+        required: true
+        type: string
+      puppet_ruby_version:
+        description: 'Puppet Ruby version (2.7, 3.2, etc.)'
+        required: true
+        type: string
+
+jobs:
+  puppet_module_dep_checker:
+    runs-on: ubuntu-20.04
+    env:
+      PUPPET_GEM_VERSION: "~> #{{ github.event.inputs.puppet_major_version }}"
+      FACTER_GEM_VERSION: 'https://github.com/puppetlabs/facter#main'
+      CEM_LINUX_NO_AUGEAS: 'true'
+    steps:
+      - name: "Checkout Source"
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+  
+      - name: "Activate Ruby ${{ github.event.inputs.puppet_ruby_version }}"
+        uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: ${{ github.event.inputs.puppet_ruby_version }}
+          bundler-cache: true
+  
+      - name: Print bundle environment
+        run: |
+          echo ::group::bundler environment
+          bundle env
+          echo ::endgroup::
+  
+      - name: "Check dependencies for Puppet v${{ github.event.inputs.puppet_major_version }}"
+        run: |
+          bundle exec dependency-checker metadata.json
