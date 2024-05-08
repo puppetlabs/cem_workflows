@@ -25,7 +25,7 @@ jobs:
       - name: "Regenerate REFERENCE.md"
         run: |
           rm -f REFERENCE.md
-          abide cem generate reference -o REFERENCE.md
+          abide sce generate reference -o REFERENCE.md
           test -s REFERENCE.md || exit 1
       
       - name: "Checkout main/REFERENCE.md"
