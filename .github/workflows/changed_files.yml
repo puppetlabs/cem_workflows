@@ -82,10 +82,10 @@ jobs:
       workflows: "${{ steps.changed-files-yaml.outputs.workflows_all_changed_and_modified_files }}"
     steps:
       - name: Checkout Source
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       - name: Get all changed files
         id: changed-files-yaml
-        uses: tj-actions/changed-files@v37
+        uses: tj-actions/changed-files@v45
         with:
           files_yaml_from_source_file: .github/changed_files.yml
