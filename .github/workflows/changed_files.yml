@@ -86,6 +86,6 @@ jobs:
 
       - name: Get all changed files
         id: changed-files-yaml
-        uses: tj-actions/changed-files@v45
+        uses: step-security/changed-files@v45
         with:
           files_yaml_from_source_file: .github/changed_files.yml
