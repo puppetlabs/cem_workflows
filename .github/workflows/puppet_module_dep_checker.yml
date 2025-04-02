@@ -11,14 +11,19 @@ on:
         description: 'Puppet Ruby version (2.7, 3.2, etc.)'
         required: true
         type: string
+    secrets:
+      forge_token:
+        required: true
 
 jobs:
   puppet_module_dep_checker:
     runs-on: ubuntu-20.04
     env:
       PUPPET_GEM_VERSION: "~> ${{ inputs.puppet_major_version }}"
-      FACTER_GEM_VERSION: 'https://github.com/puppetlabs/facter#main'
+      PUPPET_AUTH_TOKEN: ${{ secrets.forge_token }}
+      BUNDLE_RUBYGEMS___PUPPETCORE__PUPPET__COM: "forge-key:${{ secrets.forge_token }}"
       CEM_LINUX_NO_AUGEAS: 'true'
+
     steps:
       - name: "Checkout Source"
         uses: actions/checkout@v4
